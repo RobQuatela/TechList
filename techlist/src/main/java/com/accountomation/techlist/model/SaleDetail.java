@@ -1,5 +1,6 @@
 package com.accountomation.techlist.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -51,7 +52,7 @@ public class SaleDetail {
 		this.type = type;
 	}
 
-	@ManyToOne(targetEntity = Job.class)
+	@ManyToOne(targetEntity = Job.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "job_id", nullable = false,
 		foreignKey = @ForeignKey(name = "fk_salesdetail_job"))
 	public Job getJob() {

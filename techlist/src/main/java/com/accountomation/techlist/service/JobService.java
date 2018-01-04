@@ -44,8 +44,14 @@ public class JobService {
 			session.merge(job);
 			for(SaleDetail s : sd)
 				SaleDetailService.update(s);
-		} else
-			session.save(job);
+		} else {
+			List<SaleDetail> jobDetail = new ArrayList<>();
+			jobDetail.addAll(new ArrayList<SaleDetail>(job.getSaleDetail()));
+			job.getSaleDetail().clear();
+			session.saveOrUpdate(job);
+			job.setSaleDetail(jobDetail);
+			session.saveOrUpdate(job);
+		}
 
 		session.getTransaction().commit();
 		session.close();
