@@ -1,4 +1,4 @@
-package com.accountomation.techlist.service;
+package com.accountomation.techlist.dao;
 
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;

@@ -1,4 +1,4 @@
-package com.accountomation.techlist.service;
+package com.accountomation.techlist.dao;
 
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaQuery;

@@ -40,6 +40,10 @@
 <body>
 	<h1>Upload</h1>
 	<form name="frmUpload" method="post" action="Upload" enctype="multipart/form-data">
+		<select name="lstReport">
+			<option value="techSales">Technician Sales Analysis</option>
+			<option value="redo">Redo by Date</option>
+		</select>
 		<input type="file" id="file" name="uploadFile" multiple="true"
 			onchange="uploadFile()">
 		<p id="demo"></p>

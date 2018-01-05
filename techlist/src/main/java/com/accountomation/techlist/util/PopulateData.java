@@ -1,16 +1,19 @@
 package com.accountomation.techlist.util;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.hibernate.Session;
 
 import com.accountomation.techlist.model.Company;
+import com.accountomation.techlist.model.DateMap;
 import com.accountomation.techlist.model.SalesType;
 
 public class PopulateData {
 
 	public static void populate() {
-		//DateMap date = new DateMap(Date.valueOf(LocalDate.of(2017, 9, 22)));
+		DateMap date = new DateMap(Date.valueOf(LocalDate.of(2017, 9, 22)));
 		ArrayList<Company> companies = new ArrayList<>();
 		companies.add(new Company("SSB", "ATLANTA"));
 		companies.add(new Company("HOU", "HOUSTON"));
@@ -32,7 +35,7 @@ public class PopulateData {
 		
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		//session.save(date);
+		session.save(date);
 		for(Company company : companies)
 			session.save(company);
 		for(SalesType sales : salesTypes)

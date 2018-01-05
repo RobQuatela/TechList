@@ -14,6 +14,7 @@ import javax.servlet.http.Part;
 
 import com.accountomation.techlist.service.UploadService;
 //import com.accountomation.techlist.util.PopulateData;
+import com.accountomation.techlist.util.PopulateData;
 
 /**
  * Servlet implementation class UploadController
@@ -34,7 +35,7 @@ public class UploadController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//PopulateData.populate();
+		PopulateData.populate();
 		request.getRequestDispatcher("upload.jsp").forward(request, response);
 	}
 
@@ -43,10 +44,14 @@ public class UploadController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Part> fileParts = request.getParts().stream().filter(parts -> "uploadFile".equals(parts.getName())).collect(Collectors.toList());
+		String list = request.getParameter("lstReport");
 		
 		for(Part part : fileParts) {
 			InputStream file = part.getInputStream();
-			UploadService.readJobs(file);
+			if(list.equalsIgnoreCase("techSales"))
+				UploadService.readTechSales(file);
+			else if(list.equalsIgnoreCase("redo"))
+				UploadService.readRedos(file);
 		}
 		
 		response.sendRedirect("upload.jsp");

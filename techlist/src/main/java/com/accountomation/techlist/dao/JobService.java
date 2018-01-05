@@ -1,4 +1,4 @@
-package com.accountomation.techlist.service;
+package com.accountomation.techlist.dao;
 
 import java.util.ArrayList;
 import java.util.List;
