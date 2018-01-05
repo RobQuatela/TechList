@@ -1,5 +1,6 @@
 package com.accountomation.techlist.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +22,24 @@ public class Redo {
 	private DateMap date;
 	private Company company;
 	private RedoType type;
+	private int days;
+	private double amount;
+	private Timestamp modified;
 	private List<TechnicianRedo> techRedos = new ArrayList<>();
 	
 	public Redo() {
 		
 	}
 	
-	public Redo(String id, DateMap date, Company company, RedoType type) {
+	public Redo(String id, DateMap date, Company company, RedoType type, int days, double amount,
+			Timestamp modified) {
 		this.id = id;
 		this.date = date;
 		this.company = company;
 		this.type = type;
+		this.days = days;
+		this.amount = amount;
+		this.modified = modified;
 	}
 
 	@Id
@@ -75,6 +83,33 @@ public class Redo {
 
 	public void setType(RedoType type) {
 		this.type = type;
+	}
+
+	@Column(name = "redo_days")
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	@Column(name = "redo_amount")
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	@Column(name = "redo_modified")
+	public Timestamp getModified() {
+		return modified;
+	}
+
+	public void setModified(Timestamp modified) {
+		this.modified = modified;
 	}
 
 	@OneToMany(mappedBy = "redo", cascade = CascadeType.ALL)

@@ -31,6 +31,11 @@ public class Technician {
 		this.id = id;
 	}
 	
+	public Technician(String id, Company company) {
+		this.id = id;
+		this.company = company;
+	}
+	
 	public Technician(String id, String name, String role, Company company) {
 		this.id = id;
 		this.name = name;

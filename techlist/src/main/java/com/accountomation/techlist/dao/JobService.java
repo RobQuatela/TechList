@@ -39,17 +39,17 @@ public class JobService {
 		if(dupJob != null) {
 			job.setId(dupJob.getId());
 			List<SaleDetail> sd = new ArrayList<>();
-			sd.addAll(new ArrayList<SaleDetail>(job.getSaleDetail()));
-			job.getSaleDetail().clear();
+			sd.addAll(new ArrayList<SaleDetail>(job.getSaleDetails()));
+			job.getSaleDetails().clear();
 			session.merge(job);
 			for(SaleDetail s : sd)
 				SaleDetailService.update(s);
 		} else {
 			List<SaleDetail> jobDetail = new ArrayList<>();
-			jobDetail.addAll(new ArrayList<SaleDetail>(job.getSaleDetail()));
-			job.getSaleDetail().clear();
+			jobDetail.addAll(new ArrayList<SaleDetail>(job.getSaleDetails()));
+			job.getSaleDetails().clear();
 			session.saveOrUpdate(job);
-			job.setSaleDetail(jobDetail);
+			job.setSaleDetails(jobDetail);
 			session.saveOrUpdate(job);
 		}
 

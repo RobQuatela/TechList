@@ -3,6 +3,8 @@ package com.accountomation.techlist.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +36,48 @@ public class UploadService {
 			
 			while((nextLine = reader.readNext()) != null) {
 				Company company = new Company(nextLine[5]);
-				DateMap date = new DateMap(StringUtil.convertToDate(nextLine[7]));
-				RedoType redoType = new RedoType(nextLine[1], nextLine[2]);
-				Redo redo = new Redo(nextLine[6], date, company, redoType);
-				String[] techs = StringUtil.readTechID(nextLine[20]);
-				System.out.println(redo.getId() + " tech1: " + techs[0] + " tech2: " + techs[1]);
+				DateMap dateRedo = new DateMap(StringUtil.convertToDate(nextLine[7]));
+				DateMap dateOrigin = new DateMap(StringUtil.convertToDate(nextLine[17]));
+				
+				int daysBetween;
+				try {
+					daysBetween = DateMap.daysBetween(dateRedo, dateOrigin);
+				} catch(NullPointerException e) {
+					daysBetween = 0;
+				}
+				
+				RedoType redoType;
+				if(!nextLine[1].isEmpty())
+					redoType = new RedoType(nextLine[1], nextLine[2]);
+				else
+					redoType = new RedoType("EMPTY", "No explicit reason");
+				
+				Redo redo = new Redo(nextLine[6], dateRedo, company, redoType, 
+						daysBetween, Double.parseDouble(nextLine[18]), Timestamp.valueOf(LocalDateTime.now()));
+				String[] techs;
+				if(!nextLine[20].isEmpty())
+					techs = StringUtil.readTechID(nextLine[20]);
+				else {
+					techs = new String[1];
+					if(company.getId().equalsIgnoreCase("SSB"))
+						techs[0] = "EMPTYA";
+					else if(company.getId().equalsIgnoreCase("HOU"))
+						techs[0] = "EMPTYH";
+					else if(company.getId().equalsIgnoreCase("NJC"))
+						techs[0] = "EMPTYT";
+				}
+				if(techs.length > 1)
+					System.out.println(redo.getId() + " tech1: " + techs[0] + " tech2: " + techs[1]);
+				else
+					System.out.println(redo.getId() + " tech1: " + techs[0]);
 				List<TechnicianRedo> techRedos = new ArrayList<>();
 				long startTime = System.currentTimeMillis();
 				double elapsedTime;
 				
 				for (String tech : techs) {
 					if(!tech.equalsIgnoreCase("")) {
-						Technician techO = new Technician(tech);
+						Technician techO = new Technician(tech, company);
+						TechnicianService.saveOrUpdateRedo(techO);
 						techRedos.add(new TechnicianRedo(redo, techO));
 					}
 				}
@@ -83,7 +115,7 @@ public class UploadService {
 				DateMap date = new DateMap(StringUtil.convertToDate(nextLine[7]));
 				Job job = new Job(
 						nextLine[8], date, company, tech, nextLine[14],
-						Double.parseDouble(nextLine[5]), Double.parseDouble(nextLine[6]));
+						Double.parseDouble(nextLine[5]), Double.parseDouble(nextLine[6]), Timestamp.valueOf(LocalDateTime.now()));
 				ArrayList<SaleDetail> saleDetails = new ArrayList<>();
 				long startTime = System.currentTimeMillis();
 				double elapsedTime;
@@ -159,7 +191,7 @@ public class UploadService {
 				}
 				
 				//saving list of sales details to job for hibernate to automatically insert/update
-				job.setSaleDetail(saleDetails);
+				job.setSaleDetails(saleDetails);
 				
 				TechnicianService.saveOrUpdate(tech);
 				JobService.saveOrUpdate(job);

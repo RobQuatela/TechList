@@ -1,5 +1,6 @@
 package com.accountomation.techlist.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,15 @@ public class Job {
 	private String custType;
 	private double amountScheduled;
 	private double amountAddon;
-	private List<SaleDetail> saleDetail = new ArrayList<>();
+	private Timestamp modified;
+	private List<SaleDetail> saleDetails = new ArrayList<>();
 	
 	public Job() {
 		
 	}
 	
 	public Job(String invoice, DateMap date, Company company, Technician tech, 
-			String custType, double amountScheduled, double amountAddon) {
+			String custType, double amountScheduled, double amountAddon, Timestamp modified) {
 		this.invoice = invoice;
 		this.date = date;
 		this.company = company;
@@ -42,6 +44,7 @@ public class Job {
 		this.custType = custType;
 		this.amountScheduled = amountScheduled;
 		this.amountAddon = amountAddon;
+		this.modified = modified;
 	}
 
 	@Id
@@ -124,12 +127,21 @@ public class Job {
 		this.amountAddon = amountAddon;
 	}
 
-	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
-	public List<SaleDetail> getSaleDetail() {
-		return saleDetail;
+	@Column(name = "job_modified")
+	public Timestamp getModified() {
+		return modified;
 	}
 
-	public void setSaleDetail(List<SaleDetail> saleDetail) {
-		this.saleDetail = saleDetail;
+	public void setModified(Timestamp modified) {
+		this.modified = modified;
+	}
+
+	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+	public List<SaleDetail> getSaleDetails() {
+		return saleDetails;
+	}
+
+	public void setSaleDetails(List<SaleDetail> saleDetails) {
+		this.saleDetails = saleDetails;
 	}
 }

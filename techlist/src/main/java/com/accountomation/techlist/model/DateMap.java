@@ -84,4 +84,8 @@ public class DateMap {
 	public void setJobs(List<Job> jobs) {
 		this.jobs = jobs;
 	}
+	
+	public static int daysBetween(DateMap dateRedo, DateMap dateOrigin) {
+		return (int)((dateRedo.getId().getTime() - dateOrigin.getId().getTime()) / (1000 * 60 * 60 * 24));
+	}
 }
