@@ -48,9 +48,9 @@ public class JobService {
 			List<SaleDetail> jobDetail = new ArrayList<>();
 			jobDetail.addAll(new ArrayList<SaleDetail>(job.getSaleDetails()));
 			job.getSaleDetails().clear();
-			session.saveOrUpdate(job);
-			job.setSaleDetails(jobDetail);
-			session.saveOrUpdate(job);
+			session.save(job);
+			for(SaleDetail s : jobDetail)
+				SaleDetailService.update(s);
 		}
 
 		session.getTransaction().commit();

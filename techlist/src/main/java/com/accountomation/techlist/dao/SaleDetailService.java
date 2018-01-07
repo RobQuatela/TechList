@@ -37,6 +37,8 @@ public class SaleDetailService {
 		if(dupDetail != null) {
 			sd.setId(dupDetail.getId());
 			session.merge(sd);
+		} else {
+			session.save(sd);
 		}
 		
 		session.getTransaction().commit();
