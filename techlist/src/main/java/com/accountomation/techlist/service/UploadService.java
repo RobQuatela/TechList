@@ -26,8 +26,9 @@ import com.opencsv.CSVReader;
 
 public class UploadService {
 	
-	public static void readRedos(InputStream file) throws IOException {
+	public static String[] readRedos(InputStream file) throws IOException {
 		
+		String[] results = new String[3];
 		try(CSVReader reader = new CSVReader(new InputStreamReader(file))) {
 			String[] nextLine;
 			reader.readNext();
@@ -94,14 +95,17 @@ public class UploadService {
 				counter++;
 			}
 			
-			System.out.println("Total time for upload (seconds): " + timer / 1000);
-			System.out.println("Total number of records: " + counter);
-			System.out.println("Total records / second: " + (counter / (timer / 1000)));
+			results[0] = String.valueOf(timer / 1000) + " seconds";
+			results[1] = String.valueOf(counter);
+			results[2] = String.valueOf((counter / (timer / 1000)));
 		}
+		
+		return results;
 	}
 
-	public static void readTechSales(InputStream file) throws IOException {
+	public static String[] readTechSales(InputStream file) throws IOException {
 		
+		String[] results = new String[3];
 		try(CSVReader reader = new CSVReader(new InputStreamReader(file))) {
 			String[] nextLine;
 			reader.readNext();
@@ -121,9 +125,10 @@ public class UploadService {
 				double elapsedTime;
 				
 				if(job.getCustType().equalsIgnoreCase("R")) {
-					int saleCounterR = 0;
+					double salesAmountR = 0;
 					saleDetails.add(new SaleDetail(SalesTypeService.retrieve("carpt_cln"), job, 
 							Double.parseDouble(nextLine[17])));
+					
 					saleDetails.add(new SaleDetail(SalesTypeService.retrieve("furn_cln"), job, 
 							Double.parseDouble(nextLine[18])));
 					saleDetails.add(new SaleDetail(SalesTypeService.retrieve("prot"), job, 
@@ -148,15 +153,13 @@ public class UploadService {
 							Double.parseDouble(nextLine[28])));
 					
 					for(SaleDetail saleDetail : saleDetails)
-						if(saleDetail.getAmount() != 0)
-							saleCounterR++;
-					if(saleCounterR == 0 && Double.parseDouble(nextLine[16]) != 0)
+							salesAmountR += saleDetail.getAmount();
+					if(Double.parseDouble(nextLine[16]) - salesAmountR > 0 && Double.parseDouble(nextLine[16]) != 0)
 						saleDetails.add(new SaleDetail(SalesTypeService.retrieve("other"), job,
-								Double.parseDouble(nextLine[16])));
-					
+								Double.parseDouble(nextLine[16]) - salesAmountR));
 					
 				} else if(job.getCustType().equalsIgnoreCase("C")) {
-					int saleCounterC = 0;
+					double salesAmountC = 0;
 					saleDetails.add(new SaleDetail(SalesTypeService.retrieve("carpt_cln"), job, 
 							Double.parseDouble(nextLine[29])));
 					saleDetails.add(new SaleDetail(SalesTypeService.retrieve("furn_cln"), job, 
@@ -183,11 +186,10 @@ public class UploadService {
 							Double.parseDouble(nextLine[40])));
 					
 					for(SaleDetail saleDetail : saleDetails) 
-						if(saleDetail.getAmount() != 0)
-							saleCounterC++;
-					if(saleCounterC == 0 && Double.parseDouble(nextLine[16]) != 0)
+							salesAmountC += saleDetail.getAmount();
+					if(Double.parseDouble(nextLine[15]) - salesAmountC > 0 && Double.parseDouble(nextLine[15]) != 0)
 						saleDetails.add(new SaleDetail(SalesTypeService.retrieve("other"), job,
-								Double.parseDouble(nextLine[16])));
+								Double.parseDouble(nextLine[15]) - salesAmountC));
 				}
 				
 				//saving list of sales details to job for hibernate to automatically insert/update
@@ -202,9 +204,11 @@ public class UploadService {
 				counter++;
 			}
 			
-			System.out.println("Total time for upload (seconds): " + timer / 1000);
-			System.out.println("Total number of records: " + counter);
-			System.out.println("Total records / second: " + (counter / (timer / 1000)));
+			results[0] = String.valueOf(timer / 1000) + " seconds";
+			results[1] = String.valueOf(counter);
+			results[2] = String.valueOf((counter / (timer / 1000)));
 		}
+		
+		return results;
 	}
 }

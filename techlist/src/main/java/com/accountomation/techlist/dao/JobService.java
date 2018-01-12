@@ -50,7 +50,7 @@ public class JobService {
 			job.getSaleDetails().clear();
 			session.save(job);
 			for(SaleDetail s : jobDetail)
-				SaleDetailService.update(s);
+				session.save(s);
 		}
 
 		session.getTransaction().commit();

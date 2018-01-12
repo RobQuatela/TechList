@@ -45,16 +45,18 @@ public class UploadController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Part> fileParts = request.getParts().stream().filter(parts -> "uploadFile".equals(parts.getName())).collect(Collectors.toList());
 		String list = request.getParameter("lstReport");
+		String[] results = new String[3];
 		
 		for(Part part : fileParts) {
 			InputStream file = part.getInputStream();
 			if(list.equalsIgnoreCase("techSales"))
-				UploadService.readTechSales(file);
+				results = UploadService.readTechSales(file);
 			else if(list.equalsIgnoreCase("redo"))
-				UploadService.readRedos(file);
+				results = UploadService.readRedos(file);
 		}
 		
-		response.sendRedirect("upload.jsp");
+		request.setAttribute("results", results);
+		doGet(request, response);
 	}
 
 }
