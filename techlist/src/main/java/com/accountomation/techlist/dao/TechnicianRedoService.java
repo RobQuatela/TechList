@@ -44,4 +44,12 @@ public class TechnicianRedoService {
 			
 		
 	}
+	
+	public static void save(TechnicianRedo redo) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		session.save(redo);
+		session.getTransaction().commit();
+		session.close();
+	}
 }

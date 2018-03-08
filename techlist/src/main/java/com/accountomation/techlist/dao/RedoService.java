@@ -39,16 +39,21 @@ public class RedoService {
 			session.merge(redo);
 			for(TechnicianRedo techRedo : techRedos)
 				TechnicianRedoService.update(techRedo);
+			session.getTransaction().commit();
 		} else {
 			List<TechnicianRedo> tr = new ArrayList<>();
 			tr.addAll(new ArrayList<TechnicianRedo>(redo.getTechRedos()));
 			redo.getTechRedos().clear();
 			session.save(redo);
-			redo.setTechRedos(tr);
-			session.merge(redo);
+			session.getTransaction().commit();
+			//redo.setTechRedos(tr);
+			for(TechnicianRedo r : tr) {
+				TechnicianRedoService.save(r);
+			}
+			//session.merge(redo);
 		}
 		
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 		session.close();
 	}
 }
